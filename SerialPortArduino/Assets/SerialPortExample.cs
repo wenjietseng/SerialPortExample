@@ -25,16 +25,19 @@ public class SerialPortExample : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKey(KeyCode.G)) {
-			new Thread(Uno.SendData).Start("b 2");
+		if (Input.GetKey(KeyCode.W)) {
+			new Thread(Uno.SendData).Start("2 50");
 		}
-		if (Input.GetKey(KeyCode.Q)) {
-			new Thread(Uno.SendData).Start("b 1");
+		if (Input.GetKey(KeyCode.E)) {
+			new Thread(Uno.SendData).Start("2 75");
 		}
 		if (Input.GetKey(KeyCode.R)) {
-			new Thread(Uno.ReadData).Start();
-			Debug.Log(Uno.readData);
+			new Thread(Uno.SendData).Start("2 100");
 		}
+		if (Input.GetKey(KeyCode.Q)) {
+			new Thread(Uno.SendData).Start("1 0");
+		}
+		Debug.Log(Uno.ReadData());
 	}
 
 	class CommunicateWithArduino
@@ -43,7 +46,6 @@ public class SerialPortExample : MonoBehaviour {
 		public bool mac = true;
 		public string choice = "cu.usbmodem1411";
 		private SerialPort arduinoController;
-		public string readData;
 
 		public void connectToArdunio()
 		{
@@ -73,6 +75,8 @@ public class SerialPortExample : MonoBehaviour {
 				arduinoController = new SerialPort(portChoice, 9600, Parity.None, 8, StopBits.One);
 				arduinoController.Handshake = Handshake.None;
 				arduinoController.RtsEnable = true;
+				// read waiting time
+				arduinoController.ReadTimeout = 5;
 				arduinoController.Open();
 				Debug.LogWarning(arduinoController);
 			}
@@ -102,15 +106,14 @@ public class SerialPortExample : MonoBehaviour {
 			Thread.Sleep(500);
 		}
 	
-		public void ReadData()
+		public string ReadData()
 		{
+			string read = "";
 			if (connected)
 			{
 				if (arduinoController != null)
 				{
-					string read = arduinoController.ReadLine();
-					// Debug.Log(read);
-					readData = read;
+					read = arduinoController.ReadLine();
 				}
 				else
 				{
@@ -123,8 +126,7 @@ public class SerialPortExample : MonoBehaviour {
 				Debug.Log("not connected");
 			}
 
-			Thread.Sleep(500);
-			// return readData;
+			return read;
 		}
 	}
 
