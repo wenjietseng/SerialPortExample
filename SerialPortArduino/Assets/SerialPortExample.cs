@@ -13,7 +13,7 @@ using System.Threading;
 
 public class SerialPortExample : MonoBehaviour {
 
-
+    public int turns;
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
 	bool reachLaps;
@@ -37,7 +37,8 @@ public class SerialPortExample : MonoBehaviour {
 		if (Input.GetKey(KeyCode.Q)) {
 			new Thread(Uno.SendData).Start("1 0");
 		}
-		Debug.Log(Uno.ReadData());
+        turns = Int32.Parse(Uno.ReadData());
+		Debug.Log(turns);
 	}
 
 	class CommunicateWithArduino
