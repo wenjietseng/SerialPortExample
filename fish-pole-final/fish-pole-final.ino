@@ -39,6 +39,7 @@ int sum = 0;
 //int state;
 int prevDis;
 int curDis;
+int startCountingDist = 0;
 
 void setup()                         
 {
@@ -57,50 +58,18 @@ void setup()
 
 void loop() 
 { 
-  curDis = analogRead(A4);
-  int out = abs(curDis-prevDis);
-  if(out > 20){
-    sum += out;
-    prevDis = curDis;
+
+  if (startCountingDist) {
+    curDis = analogRead(A4);
+    int out = abs(curDis-prevDis);
+    if(out > 5){
+      sum += out;
+      prevDis = curDis;
+    }
+    Serial.println(sum);
+    delay(500);
   }
 //  Serial.println(analogRead(A4));
-//  int d0 = analogRead(A4);
-//  int d1 = analogRead(A4);
-//  int out = abs(d1 - d0);
-//  sum += out;
-//  Serial.println(sum);
-
-  if (sum > 2500) {
-    Serial.println(1);
-    sum = 0;    
-  }
-//  else
-//  {
-//    Serial.println(0);
-//  }
-  delay(500);
-//  distance = 1024 - analogRead(A4);
-//  Serial.println(distance);
-//  if(distance > maxDis){
-//    if(state == ADDMAX || state == INITIAL){
-//      cycles++;
-//      state = ADDMIN;
-//    }
-//  }
-//
-//  else if(distance < minDis){
-//    if(state == ADDMIN || state == INITIAL){
-//      cycles++;
-//      state = ADDMAX;
-//    }
-//  }
-//  Serial.println(cycles);
-//  if (cycles > 20) {
-//    // reach 20, reset to 0, got fish successfully or failed
-//    cycles = 0;
-//    Serial.println("1");
-//    delay(500);
-//  }
 
   while(Serial.available())
   {
@@ -123,10 +92,13 @@ void loop()
       if (movement == 1) {
         usMotor_Status = BRAKE;
         motorGo(MOTOR_1, usMotor_Status, 0);
+        sum = 0;
+        startCountingDist = 0;
       }
       else if (movement == 2) {
         usMotor_Status = CW;
         motorGo(MOTOR_1, usMotor_Status, motor_speed);
+        startCountingDist = 1;
       }
       else if (movement == 3) {
         usMotor_Status = CCW;
