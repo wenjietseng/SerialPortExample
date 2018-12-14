@@ -62,7 +62,11 @@ void loop()
   if (startCountingDist) {
     curDis = analogRead(A4);
     int out = abs(curDis-prevDis);
+    // -----------------------------------------
+    // 改這個threshold 原本是20
+    // Unity那邊就把150改成1500就好了 或者轉太久就改低 (>.^)
     if(out > 5){
+    // -----------------------------------------
       sum += out;
       prevDis = curDis;
     }
